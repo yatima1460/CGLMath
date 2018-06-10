@@ -1,8 +1,8 @@
 #pragma once
 
 
-struct vector2i
+typedef struct vector2i
 {
     int x;
     int y;
-};
+} Vector2i;

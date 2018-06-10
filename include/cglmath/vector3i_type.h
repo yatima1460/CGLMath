@@ -1,9 +1,9 @@
 #pragma once
 
-struct vector3i
+typedef struct vector3i
 {
     int x;
     int y;
     int z;
-};
+} Vector3i;
 
