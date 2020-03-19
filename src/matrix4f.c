@@ -2,6 +2,7 @@
 
 
 #include <math.h>
+#include <cglmath/transform.h>
 #include <cglmath/vector4f_type.h>
 #include "cglmath/matrix4f.h"
 #include "cglmath/vector3f.h"
@@ -291,4 +292,55 @@ Matrix4f matrix4f_ortho(float left, float right, float bottom, float top, float 
     result.m32 = (far + near) * fn;
     result.m33 = 1.0f;
     return result;
+}
+
+Quaternion matrix4f_to_quaternion(Matrix4f m)
+{
+    Quaternion q;
+    q.d = sqrt(1 + m.m00 + m.m11 + m.m22) / 2;
+    q.a = (m.m21 - m.m12) / (4 * q.d);
+    q.b = (m.m02 - m.m20) / (4 * q.d);
+    q.c = (m.m10 - m.m01) / (4 * q.d);
+
+    return q;
+}
+
+Transform matrix4f_to_transform(Matrix4f m)
+{
+
+    Transform t = transform_identity();
+    t.position.x = m.m30;
+    t.position.y = m.m31;
+    t.position.z = m.m32;
+
+    t.scale.x = vector3f_magnitude((Vector3f){m.m00, m.m01, m.m02});
+    t.scale.y = vector3f_magnitude((Vector3f){m.m10, m.m11, m.m12});
+    t.scale.z = vector3f_magnitude((Vector3f){m.m20, m.m21, m.m22});
+
+    Matrix4f rotation_matrix = m;
+    rotation_matrix.m00 /= t.scale.x;
+    rotation_matrix.m01 /= t.scale.x;
+    rotation_matrix.m02 /= t.scale.x;
+    rotation_matrix.m03 = 0;
+
+    rotation_matrix.m10 /= t.scale.y;
+    rotation_matrix.m11 /= t.scale.y;
+    rotation_matrix.m12 /= t.scale.y;
+    rotation_matrix.m13 = 0;
+
+    rotation_matrix.m20 /= t.scale.z;
+    rotation_matrix.m21 /= t.scale.z;
+    rotation_matrix.m22 /= t.scale.z;
+    rotation_matrix.m23 = 0;
+
+    // reset position
+    rotation_matrix.m30 = 0;
+    rotation_matrix.m31 = 0;
+    rotation_matrix.m32 = 0;
+
+    rotation_matrix.m33 = 1;
+    
+    t.rotation = matrix4f_to_quaternion(rotation_matrix);
+
+    return t;
 }
