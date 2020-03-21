@@ -297,7 +297,7 @@ Matrix4f matrix4f_ortho(float left, float right, float bottom, float top, float 
 Quaternion matrix4f_to_quaternion(Matrix4f m)
 {
     Quaternion q;
-    q.d = sqrt(1 + m.m00 + m.m11 + m.m22) / 2;
+    q.d = sqrtf(1 + m.m00 + m.m11 + m.m22) / 2;
     q.a = (m.m21 - m.m12) / (4 * q.d);
     q.b = (m.m02 - m.m20) / (4 * q.d);
     q.c = (m.m10 - m.m01) / (4 * q.d);
