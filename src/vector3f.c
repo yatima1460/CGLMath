@@ -105,7 +105,7 @@ Vector3f vector3f_mul_scalar(Vector3f v, float s)
 Vector3f vector3f_rotate(Vector3f v, Quaternion q)
 {
 
-    Quaternion p = quaternion_normalize(q);
+    q = quaternion_normalize(q);
     Vector3f u = quaternion_imaginary(q);
     float s = quaternion_real(q);
 
